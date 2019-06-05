@@ -9,17 +9,24 @@ export default class Posts extends Component {
     title: "Início"
   };
   state = {
-    posts: []
+    postagem: [],
+    postagem: {}
   };
   async componentDidMount() {
-    const response = await api.get();
-    this.setState({ posts: response.posts });
+    const response = await api
+      .get()
+      .then(postagem => {
+        this.setState({ postagem: response.data });
+      })
+      .catch(err => console.log(err));
+
+    // this.setState({ postagem: response.posts });
   }
   render() {
     return (
       <View>
-        {this.state.posts.map(post => (
-          <Text>{post.content}</Text>
+        {/* {this.state.postagem.map(post => (
+          <Text>{post}</Text> */}
         ))}
       </View>
     );
