@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { View, Text } from "react-native";
+import { View, Text, FlatList } from "react-native";
 
 import api from "../services/api";
 
@@ -9,25 +9,33 @@ export default class Posts extends Component {
     title: "Início"
   };
   state = {
-    postagem: [],
-    postagem: {}
+    postagem: []
+  };
+  loadData = async () => {
+    const response = await api.get();
+    const postagem = response.data.posts;
+    this.setState({ postagem });
   };
   async componentDidMount() {
-    const response = await api
-      .get()
-      .then(postagem => {
-        this.setState({ postagem: response.data });
-      })
-      .catch(err => console.log(err));
-
-    // this.setState({ postagem: response.posts });
+    this.loadData();
   }
+
+  renderItem = ({ item }) => (
+    <View>
+      <Text>{item.title}</Text>
+      <Text>{"Data: " + item.date + " por " + item.author.name}</Text>
+      <Text>{item.content}</Text>
+    </View>
+  );
+
   render() {
     return (
       <View>
-        {/* {this.state.postagem.map(post => (
-          <Text>{post}</Text> */}
-        ))}
+        <FlatList
+          data={this.state.postagem}
+          keyExtractor={item => item.id}
+          renderItem={this.renderItem}
+        />
       </View>
     );
   }
